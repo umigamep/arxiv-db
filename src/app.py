@@ -13,7 +13,7 @@ from my_notion import check_existing_id, insert_arXiv_database
 from my_slack import post_to_slack
 
 DATABASE_ID = "1062073f173f80109244d8aa52ea1dbb"  # 接続先DB
-MAX_RESULT = 20  # aiXivの各カテゴリで最新何件まで検索するか
+MAX_RESULT = 30  # aiXivの各カテゴリで最新何件まで検索するか
 SYSTEM_PROMPT = create_summary_system_prompt()
 CATEGORY_LIST = ["stat.AP", "stat.ME", "cs.IR", "cs.CL"]  # + ["stat.CO", "stat.ML"]
 
@@ -65,11 +65,11 @@ def job():
 
 
 # AM11:00のjob実行を登録
-schedule.every().day.at("11:00").do(job)
+schedule.every().day.at("08:00").do(job)  # 日本時間はここから+9時間
 
 if __name__ == "__main__":
-    job()
-    # # jobの実行監視、指定時間になったらjob関数を実行
-    # while True:
-    #     schedule.run_pending()
-    #     time.sleep(1)
+    # job()
+    # jobの実行監視、指定時間になったらjob関数を実行
+    while True:
+        schedule.run_pending()
+        time.sleep(60)
