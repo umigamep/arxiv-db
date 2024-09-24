@@ -8,13 +8,16 @@ client = WebClient(token=os.environ["SLACK_API_TOKEN"])
 
 def post_to_slack(text, channel):
     try:
-        client.chat_postMessage(text=text, channel=channel)
+        client.chat_postMessage(
+            channel=channel,
+            text=text,
+        )
 
     except Exception as e:
         print(e)
 
 
 if __name__ == "__main__":
-    text = "Hello from slack-sdk"
+    text = ":tada: APIから *こんにちは* "
     channel = "#slack-sdk-test"
     post_to_slack(text, channel)
