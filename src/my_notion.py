@@ -61,8 +61,8 @@ def create_date_content(date):
     return {"date": {"start": date}}
 
 
-def create_category_content(category, color="gray"):
-    return {"multi_select": [{"name": category, "color": color}]}
+def create_category_content(category):
+    return {"multi_select": [{"name": category}]}
 
 
 def check_existing_id(database_id, arxiv_id):
@@ -91,7 +91,7 @@ def insert_arXiv_database(database_id, page_info):
                     page_info["title"], href=page_info["url"]
                 ),
                 "Authors": create_text_content(page_info["authors"]),
-                "Abstract": create_text_content(page_info["abstract"]),
+                "Abstract": create_rich_text_content(page_info["abstract"]),
                 "LLM-summary": create_rich_text_content(page_info["LLM-summary"]),
                 "Comments": create_text_content(page_info["comment"]),
                 "Categories": create_category_content(page_info["category"]),
