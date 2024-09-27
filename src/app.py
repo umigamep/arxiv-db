@@ -1,14 +1,13 @@
 import time
 
 import schedule
-from tqdm import tqdm
-
 from my_arXiv import search_arXiv
 from my_LLM import (
     request_gpt4o_mini,
 )
 from my_notion import check_existing_id, insert_arXiv_database
 from my_slack import post_to_slack
+from tqdm import tqdm
 
 DATABASE_ID = "1062073f173f80109244d8aa52ea1dbb"  # 接続先DB
 MAX_RESULT = 30  # aiXivの各カテゴリで最新何件まで検索するか
