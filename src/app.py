@@ -53,24 +53,6 @@ def create_summary_user_prompt(title, abst):
 SUMMARY_SYSTEM_PROMPT = create_summary_system_prompt()
 
 
-# def create_translation_system_prompt():
-#     prompt = """
-#     ## 指示
-#     ネイティブの英語教師として、日本人の英語学習者の手助けをしてください。学習者が入力した英文に、CEFR C1以上の英単語を【】で囲って、()で日本語訳を記載する加工を施してください。
-#     ## 例
-#     - 入力: He is a physicist.
-#     - 出力: He is a 【physicist】 (物理学者).
-#     """
-#     return prompt
-
-
-# def create_translation_user_prompt(abst):
-#     return abst
-
-
-# TRANSLATION_SYSTEM_PROMPT = create_translation_system_prompt()
-
-
 # 実行job関数
 def job():
     # カテゴリごとにクロール
@@ -98,38 +80,16 @@ def job():
                 )
                 page_info["LLM-summary"] = LLM_summary
 
-                # # LLMでabstractを加工
-                # page_info["abstract"] = request_gpt4o_mini(
-                #     system_prompt=TRANSLATION_SYSTEM_PROMPT,
-                #     user_prompt=create_translation_user_prompt(page_info["abstract"]),
-                # )
-
                 # Notionのテーブルにインサート
                 insert_arXiv_database(DATABASE_ID, page_info)
-                # is_not_inserted = insert_arXiv_database(DATABASE_ID, page_info)
 
-                # if not is_not_inserted:
-                #     # 結果をSlackにpost
-                #     channel = (
-                #         "#arxiv-" + page_info["category"].replace(".", "_").lower()
-                #     )
-                #     text = "\n".join(
-                #         [
-                #             f"📑-{post_cnt}: {page_info["title"]}",
-                #             f"🔗: {page_info["url"]}",
-                #             "Summary:",
-                #             LLM_summary.replace("【", " *").replace("】", "* "),
-                #         ]
-                #     )
-                #     post_to_slack(text=text, channel=channel)
-                #     post_cnt += 1
             time.sleep(1)
         time.sleep(3)
     channel = "#slack-sdk-test"
     text = "\n".join(
         [
             "<!channel> 本日の論文を更新しました。",
-            "🔗: https://www.notion.so/1062073f173f80109244d8aa52ea1dbb?v=10a2073f173f803cb61c000c107d30f9&pvs=4",
+            "🔗 https://www.notion.so/1062073f173f80109244d8aa52ea1dbb?v=10a2073f173f803cb61c000c107d30f9&pvs=4",
         ]
     )
     post_to_slack(text=text, channel=channel)
