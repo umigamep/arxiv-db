@@ -1,15 +1,17 @@
+import os
 import time
 
 import schedule
+from tqdm import tqdm
+
 from my_arXiv import search_arXiv
 from my_LLM import (
     request_gpt4o_mini,
 )
 from my_notion import check_existing_id, insert_arXiv_database
 from my_slack import post_to_slack
-from tqdm import tqdm
 
-DATABASE_ID = "1062073f173f80109244d8aa52ea1dbb"  # 接続先DB
+DATABASE_ID = os.environ["ARXIV_DATABASE_ID"]  # 接続先DB
 MAX_RESULT = 30  # aiXivの各カテゴリで最新何件まで検索するか
 CATEGORY_LIST = ["stat.AP", "stat.ME", "cs.IR", "cs.CL"]  # + ["stat.CO", "stat.ML"]
 
@@ -88,7 +90,7 @@ def job():
     text = "\n".join(
         [
             "<!channel> 本日の論文を更新しました。",
-            "🔗 https://www.notion.so/1062073f173f80109244d8aa52ea1dbb?v=10a2073f173f803cb61c000c107d30f9&pvs=4",
+            f"🔗 https://www.notion.so/{DATABASE_ID}",
         ]
     )
     post_to_slack(text=text, channel=channel)

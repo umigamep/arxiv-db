@@ -105,7 +105,7 @@ def insert_arXiv_database(database_id, page_info):
 
 
 if __name__ == "__main__":
-    database_id = "1062073f173f80109244d8aa52ea1dbb"  # URLの'/{}?v='部分
+    database_id = os.environ["ARXIV_DATABASE_ID"]
 
     # response = read_notion_database(notion, database_id)
     # for result in response["results"]:
