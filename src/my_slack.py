@@ -2,22 +2,29 @@ import os
 
 from slack_sdk.web import WebClient
 
+
 # slack app url: https://api.slack.com/apps/A07MQNVK1V5
-client = WebClient(token=os.environ["SLACK_API_TOKEN"])
+class MySlackClient(WebClient):
+    def __init__(
+        self,
+        token: str | None = None,
+    ):
+        super().__init__(token)
 
+    def post_text_to_channel(self, text, channel):
+        try:
+            self.chat_postMessage(
+                channel=channel,
+                text=text,
+            )
 
-def post_to_slack(text, channel):
-    try:
-        client.chat_postMessage(
-            channel=channel,
-            text=text,
-        )
-
-    except Exception as e:
-        print(e)
+        except Exception as e:
+            print(e)
 
 
 if __name__ == "__main__":
+    slack = MySlackClient(token=os.environ["SLACK_API_TOKEN"])
     text = ":tada: APIから *こんにちは* "
     channel = "#slack-sdk-test"
-    post_to_slack(text, channel)
+
+    slack.post_text_to_channel(text, channel)

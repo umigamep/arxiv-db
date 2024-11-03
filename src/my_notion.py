@@ -6,6 +6,57 @@ from notion_client import Client
 notion = Client(auth=os.environ["NOTION_TOKEN"])
 
 
+class MyArxivDatabaseClient(Client):
+    def __init__(self, auth, database_id) -> None:
+        super().__init__(auth=auth)
+        self.database_id = database_id
+
+    def check_existing_id(self, arxiv_id):
+        query = {
+            "database_id": self.database_id,
+            "filter": {"property": "arXiv-ID", "rich_text": {"equals": arxiv_id}},
+            "page_size": 1,  # 一致するものが見つかったらすぐに終了するため
+        }
+        response = self.databases.query(**query)
+        return len(response["results"]) > 0
+
+    def insert_paper_info(self, paper_info):
+        if check_existing_id(self.database_id, paper_info.arxiv_id):
+            print(
+                f"Record with ID {paper_info.arxiv_id} already exists. Skipping insertion."
+            )
+            return 0
+
+        try:
+            self.pages.create(
+                parent={"database_id": self.database_id},
+                properties={
+                    "arXiv-ID": create_text_content(paper_info.arxiv_id),
+                    "Title": create_title_content(
+                        paper_info.title, href=paper_info.url
+                    ),
+                    "Authors": create_text_content(paper_info.authors),
+                    "Abstract": create_rich_text_content(paper_info.abstract),
+                    "LLM-summary": create_rich_text_content(paper_info.llm_summary),
+                    "Comments": create_text_content(paper_info.comment),
+                    "Categories": create_category_content(paper_info.category),
+                    "Submission Date": create_date_content(paper_info.submitted_date),
+                },
+            )
+        except Exception as e:
+            print(f"Error inserting into Notion database: {e}")
+            return 1
+        return 0
+
+    def read(self):
+        response = self.databases.query(
+            **{
+                "database_id": database_id,
+            }
+        )
+        return response
+
+
 def read_notion_database(notion, database_id):
     response = notion.databases.query(
         **{
