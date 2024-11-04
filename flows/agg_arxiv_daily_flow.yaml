@@ -4,3 +4,4 @@ CATEGORY_LIST:
   - stat.ME
   - cs.IR
   - cs.CL
+SLACK_CHANNEL: "#slack-sdk-test"

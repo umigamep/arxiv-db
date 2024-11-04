@@ -1,19 +1,19 @@
-import os
 import time
 
 import yaml
 from prefect import flow
+from prefect.blocks.system import Secret
 from tools.my_arXiv import search_arXiv
 from tools.my_notion import MyArxivDatabaseClient
 from tools.my_slack import MySlackClient
 from tools.paper_info import PaperInfo, create_llm_summary, insert_paper_into_database
 
-DATABASE_ID = os.environ["ARXIV_DATABASE_ID"]
+DATABASE_ID = Secret.load("arxiv-database-id").get()
 
 arxiv_database = MyArxivDatabaseClient(
-    auth=os.environ["NOTION_TOKEN"], database_id=DATABASE_ID
+    auth=Secret.load("notion-token").get(), database_id=DATABASE_ID
 )
-slack = MySlackClient(token=os.environ["SLACK_API_TOKEN"])
+slack = MySlackClient(token=Secret.load("slack-api-token").get())
 
 params = yaml.safe_load(open("flows/agg_arxiv_daily_flow.yaml"))
 MAX_RESULT = params["MAX_RESULT"]  # aiXivの各カテゴリで最新何件まで検索するか
@@ -41,14 +41,14 @@ def agg_arxiv_daily_flow():
             else:
                 paper_info = PaperInfo(**page_info)
                 llm_summary = create_llm_summary(
-                    paper_info, os.environ["OPENAI_APIKEY"]
+                    paper_info, Secret.load("openai-apikey").get()
                 )
                 paper_info.llm_summary = llm_summary
                 insert_paper_into_database(paper_info, arxiv_database)
 
             time.sleep(1)
         time.sleep(3)
-    channel = "#slack-sdk-test"
+    channel = params["SLACK_CHANNEL"]
     text = "\n".join(
         [
             "<!channel> 本日の論文を更新しました。",
