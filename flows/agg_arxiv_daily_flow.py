@@ -22,7 +22,7 @@ CATEGORY_LIST = params["CATEGORY_LIST"]
 
 # 実行job関数
 @flow  # (log_prints=True)
-def job():
+def agg_arxiv_daily_flow():
     # カテゴリごとにクロール
     for category in CATEGORY_LIST:
         # arXiv APIにリクエスト
@@ -59,4 +59,4 @@ def job():
 
 
 if __name__ == "__main__":
-    job()
+    agg_arxiv_daily_flow()
