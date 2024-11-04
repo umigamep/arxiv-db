@@ -1,0 +1,6 @@
+MAX_RESULT: 10
+CATEGORY_LIST:
+  - stat.AP
+  - stat.ME
+  - cs.IR
+  - cs.CL

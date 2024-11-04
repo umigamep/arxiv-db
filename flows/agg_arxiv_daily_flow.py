@@ -1,6 +1,7 @@
 import os
 import time
 
+import yaml
 from prefect import flow
 from tools.my_arXiv import search_arXiv
 from tools.my_notion import MyArxivDatabaseClient
@@ -14,8 +15,9 @@ arxiv_database = MyArxivDatabaseClient(
 )
 slack = MySlackClient(token=os.environ["SLACK_API_TOKEN"])
 
-MAX_RESULT = 12  # aiXivの各カテゴリで最新何件まで検索するか
-CATEGORY_LIST = ["stat.AP", "stat.ME", "cs.IR", "cs.CL"]  # + ["stat.CO", "stat.ML"]
+params = yaml.safe_load(open("flows/agg_arxiv_daily_flow.yaml"))
+MAX_RESULT = params["MAX_RESULT"]  # aiXivの各カテゴリで最新何件まで検索するか
+CATEGORY_LIST = params["CATEGORY_LIST"]
 
 
 # 実行job関数
