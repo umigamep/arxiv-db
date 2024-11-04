@@ -1,8 +1,10 @@
 from datetime import datetime, timedelta
 
 import arxiv
+from prefect import task
 
 
+@task
 def search_arXiv(category, max_result=100):
     client = arxiv.Client()
     # 現在の日付から1週間前と2週間前の日付を計算

@@ -1,5 +1,6 @@
 import os
 
+from prefect import task
 from slack_sdk.web import WebClient
 
 
@@ -11,6 +12,7 @@ class MySlackClient(WebClient):
     ):
         super().__init__(token)
 
+    @task
     def post_text_to_channel(self, text, channel):
         try:
             self.chat_postMessage(

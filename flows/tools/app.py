@@ -2,13 +2,12 @@ import os
 import time
 
 import schedule
-from openai import OpenAI
-from tqdm import tqdm
-
 from my_arXiv import search_arXiv
-from my_notion import MyArxivDatabaseClient, check_existing_id
+from my_notion import MyArxivDatabaseClient
 from my_slack import MySlackClient
+from openai import OpenAI
 from paper_info import PaperInfo
+from tqdm import tqdm
 
 DATABASE_ID = os.environ["ARXIV_DATABASE_ID"]
 
@@ -34,7 +33,7 @@ def job():
         # ヒットしたpageごとに要約を作成し、インサートし、ポスト
         for page_info in tqdm(page_info_list):
             page_info["arxiv_id"] = page_info["url"].rsplit("/", 1)[-1].split("v")[0]
-            if check_existing_id(DATABASE_ID, page_info["arxiv_id"]):
+            if arxiv_database.check_id_exists(page_info["arxiv_id"]):
                 print(
                     f"Record with ID {page_info["arxiv_id"]} already exists. Skipping insertion."
                 )

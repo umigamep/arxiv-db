@@ -39,4 +39,4 @@ Slack app を作成し、通知投稿用のチャンネルと連携を済ませ�
 
 ### OpenAI APIの設定
 
-API　Key を発行して入金する。
+API Key を発行して入金する。
